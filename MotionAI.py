@@ -54,6 +54,7 @@ def time_():
 
 def open_():
     try:
+        speak("Sure . opening Google chrome")
         subprocess.Popen("C:\Program Files\Google\Chrome\Application\chrome.exe")
         # print(1)
     except:
@@ -61,16 +62,19 @@ def open_():
 
 def insta():
     try:
+        speak("Opening Instagram")
         webbrowser.open("https://www.instagram.com/?utm_source=pwa_homescreen&__pwa=1")
     except:
         speak("their is an unknown error")
 def git():
     try:
+        speak("Opening Github")
         webbrowser.open("https://github.com/")
     except:
         speak("their is an unknown error")
 def chatgpt():
     try:
+        speak("Opening Chatgpt")
         webbrowser.open("https://chat.openai.com/")
     except:
         speak("their is an unknown error")
@@ -79,6 +83,7 @@ def shutdown():
     shut_ = "shutdown /s"
     try:
         subprocess.run(shut_ , shell=True)
+        speak("the system will shutdown shortly")
     except:
         speak("their is an error")
 
@@ -111,6 +116,7 @@ if __name__ == "__main__":
             git()
         elif "chat" in query or "gpt" in query or "chatgpt" in query:
             chatgpt()
+            continue
         elif "music" in query or "song" in query or "gaana" in query:
             music()
             break
