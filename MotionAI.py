@@ -3,12 +3,13 @@ import pyttsx3
 import speech_recognition as sr
 import time
 import requests
-# import openai
+import os
 import subprocess
 import webbrowser
 
 def created():
     speak("how are you sir. I am Motion Ai . How can I assist you Sir .")
+    print("how are you sir. I am Motion Ai . How can I assist you Sir .")
 
 def take_cmd():
     recognizer = sr.Recognizer()
@@ -80,9 +81,22 @@ def shutdown():
         subprocess.run(shut_ , shell=True)
     except:
         speak("their is an error")
+
+def music():
+    files = os.listdir("E:\\MUSIC")   
+    # file = os.path.join("E:\\MUSIC", files)
+    rf = random.choice(files)
+    file_path = os.path.join("E:\\MUSIC" , rf )
+    # print(file_path)
+    try:
+        subprocess.run(["start","wmplayer", file_path],shell=True)
+    except:
+        print('nonononoon')
+        # print(file_path)
         
         
 if __name__ == "__main__":
+    created()
     while True:
         query = listen() 
         if "insta" in query or "gram" in query:
@@ -97,6 +111,9 @@ if __name__ == "__main__":
             git()
         elif "chat" in query or "gpt" in query or "chatgpt" in query:
             chatgpt()
+        elif "music" in query or "song" in query or "gaana" in query:
+            music()
+            break
         else:
             speak("Could you please say it again?")
 
