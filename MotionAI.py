@@ -8,7 +8,7 @@ import subprocess
 import webbrowser
 
 def created():
-    speak("how are you sir. I am Motion Ai . How can I assist you Sir .")
+    speak("hello sir . how can I help")
     print("how are you sir. I am Motion Ai . How can I assist you Sir .")
 
 def take_cmd():
@@ -26,7 +26,7 @@ def take_cmd():
         print(f"You said: {query}")
         return query.lower()
     except sr.UnknownValueError:
-        print('Sorry, I could not understand. Please try again.')
+        speak('Sorry , Could you repeat that')
         return None
     except sr.RequestError as e:
         print(f"Could not request results; {e}")
@@ -38,10 +38,37 @@ def listen():
         if command is not None:
             return command
 
+def take_cmd_temp():
+    recognizer = sr.Recognizer()
+    microphone = sr.Microphone()
+
+    with microphone as source:
+        print("Listening...")
+        recognizer.adjust_for_ambient_noise(source)
+        audio = recognizer.listen(source)
+
+    try:
+        print('Recognizing...')
+        query = recognizer.recognize_google(audio, language='en-in')
+        print(f"You said: {query}")
+        return query.lower()
+    except sr.UnknownValueError:
+        print('Sorry , Could you repeat that')
+        return None
+    except sr.RequestError as e:
+        print(f"Could not request results; {e}")
+        return None
+
+def listen_temp():
+    while True:
+        command = take_cmd_temp()
+        if command is not None:
+            return command
+        
 # speak
 engine = pyttsx3.init('sapi5')   
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
+engine.setProperty('voice', voices[0].id)
 
 
 def speak(audio):
@@ -62,7 +89,7 @@ def open_():
 
 def insta():
     try:
-        speak("Opening Instagram")
+        speak("Opening Insta")
         webbrowser.open("https://www.instagram.com/?utm_source=pwa_homescreen&__pwa=1")
     except:
         speak("their is an unknown error")
@@ -98,31 +125,38 @@ def music():
     except:
         print('nonononoon')
         # print(file_path)
+def main():    
+        while True:
+            query = listen() 
+            if "insta" in query or "gram" in query:
+                insta()
+            elif "chrome" in query or "crome" in query:
+                open_()
+            elif "time" in query:
+                time_()
+            elif "power" in query:
+                shutdown()
+                break
+            elif "github" in query:
+                git()
+            elif "chat" in query or "gpt" in query or "chatgpt" in query:
+                chatgpt()
+                continue
+            elif "music" in query or "song" in query or "gaana" in query:
+                music()
+                break
+            else:
+                speak("Could you please say it again?")
         
         
 if __name__ == "__main__":
-    created()
-    while True:
-        query = listen() 
-        if "insta" in query or "gram" in query:
-            insta()
-        elif "chrome" in query or "crome" in query:
-            open_()
-        elif "time" in query:
-            time_()
-        elif "power" in query:
-            shutdown()
-        elif "github" in query:
-            git()
-        elif "chat" in query or "gpt" in query or "chatgpt" in query:
-            chatgpt()
-            continue
-        elif "music" in query or "song" in query or "gaana" in query:
-            music()
+    while True: 
+        initial = listen_temp()
+        if "motion" in initial.lower() or "hello" in initial.lower():
+            created()
             break
-        else:
-            speak("Could you please say it again?")
-
+    main()
+    
 
 
             
