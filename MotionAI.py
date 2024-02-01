@@ -2,43 +2,25 @@ import random
 import pyttsx3
 import speech_recognition as sr
 import time
-import requests
+# import requests
 import os
 import subprocess
 import webbrowser
 
 def created():
-    speak("hello sir . how can I help")
-    print("how are you sir. I am Motion Ai . How can I assist you Sir .")
+    response_dict = {
+        "hello": "Hi there! How can I help you?",
+        "how are you": "I am perfect ",
+        "hey": "hey their"}
+    for keyword, response in response_dict.items():
+        if keyword in query:
+            speak(response)
+
+    # Default response if no keyword matches
+    return "I'm not sure how to respond to that."
+    
 
 def take_cmd():
-    recognizer = sr.Recognizer()
-    microphone = sr.Microphone()
-
-    with microphone as source:
-        print("Listening...")
-        recognizer.adjust_for_ambient_noise(source)
-        audio = recognizer.listen(source)
-
-    try:
-        print('Recognizing...')
-        query = recognizer.recognize_google(audio, language='en-in')
-        print(f"You said: {query}")
-        return query.lower()
-    except sr.UnknownValueError:
-        speak('Sorry , Could you repeat that')
-        return None
-    except sr.RequestError as e:
-        print(f"Could not request results; {e}")
-        return None
-
-def listen():
-    while True:
-        command = take_cmd()
-        if command is not None:
-            return command
-
-def take_cmd_temp():
     recognizer = sr.Recognizer()
     microphone = sr.Microphone()
 
@@ -59,11 +41,12 @@ def take_cmd_temp():
         print(f"Could not request results; {e}")
         return None
 
-def listen_temp():
+def listen():
     while True:
-        command = take_cmd_temp()
+        command = take_cmd()
         if command is not None:
             return command
+
         
 # speak
 engine = pyttsx3.init('sapi5')   
@@ -105,6 +88,18 @@ def chatgpt():
         webbrowser.open("https://chat.openai.com/")
     except:
         speak("their is an unknown error")
+def youtube():
+    try:
+        speak("Sure sir")
+        webbrowser.open("https://www.youtube.com/")
+    except:
+        speak("their is an unknown error")
+def class_room():
+    try:
+        speak("Sure sir")
+        webbrowser.open("https://classroom.google.com/?lfhs=2")
+    except:
+        speak("their is an unknown error")
 
 def shutdown():
     shut_ = "shutdown /s"
@@ -113,6 +108,11 @@ def shutdown():
         speak("the system will shutdown shortly")
     except:
         speak("their is an error")
+
+def note():
+    with open('notes.txt', 'w') as file:
+            a = listen()
+            print( a , file=file)
 
 def music():
     files = os.listdir("E:\\MUSIC")   
@@ -130,29 +130,38 @@ def main():
             query = listen() 
             if "insta" in query or "gram" in query:
                 insta()
+                
+            if "youtube" in query or "tube" in query:
+                youtube()
+                
             elif "chrome" in query or "crome" in query:
                 open_()
+                
             elif "time" in query:
                 time_()
+                
             elif "power" in query:
                 shutdown()
                 break
             elif "github" in query:
                 git()
+                
             elif "chat" in query or "gpt" in query or "chatgpt" in query:
                 chatgpt()
-                continue
+                
             elif "music" in query or "song" in query or "gaana" in query:
                 music()
-                break
+            
+            elif "notes" in query or "making" in query :
+                note()
             else:
-                speak("Could you please say it again?")
+                print("Could you please say it again?")
         
         
 if __name__ == "__main__":
-    while True: 
-        initial = listen_temp()
-        if "motion" in initial.lower() or "hello" in initial.lower():
+    while True:   
+        query = listen()
+        if "motion" in query.lower() or "hello" in query.lower():
             created()
             break
     main()
