@@ -2,21 +2,22 @@ import random
 import pyttsx3
 import speech_recognition as sr
 import time
-# import requests
+import requests
 import os
 import subprocess
 import webbrowser
 
 def created():
     response_dict = {
-        "hello": "Hi there! How can I help you?",
+        "hello motion": "Hi there! How can I help you?",
         "how are you": "I am perfect ",
-        "hey": "hey their"}
+        "hey": "hey their",
+        "Activate motion": "Any tasks sir"}
     for keyword, response in response_dict.items():
-        if keyword in query:
+        if keyword.lower() in query:
             speak(response)
 
-    # Default response if no keyword matches
+
     return "I'm not sure how to respond to that."
     
 
@@ -125,6 +126,37 @@ def music():
     except:
         print('nonononoon')
         # print(file_path)
+
+def tranlate(x):
+
+    try:
+        modified_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{x}"
+        res = requests.get(modified_url)
+        data = res.json()
+        defi = data[0]["meanings"]
+        s_data = defi[0]["definitions"][0]["definition"]
+        speak(f"meaning of {x} is")
+        speak(s_data)
+        print(s_data)
+    except KeyError as e:
+        print("I think their is no word like this", e)
+        speak("I think their is no word like this")
+    except Exception as e:
+        print("Some unknown errors", e)
+        speak("Some unknown errors")
+
+
+def trans(query):
+    new_q = query.split()
+    a = list(new_q)
+    try:
+        pos = a.index("translate")
+        word = new_q[pos + 1]
+        tranlate(word)
+    except ValueError:
+        print("Sorry whats thats word")\
+    
+    
 def main():    
         while True:
             query = listen() 
@@ -154,6 +186,9 @@ def main():
             
             elif "notes" in query or "making" in query :
                 note()
+            elif "translate" in query :
+                trans(query)
+            
             else:
                 print("Could you please say it again?")
         
@@ -161,9 +196,8 @@ def main():
 if __name__ == "__main__":
     while True:   
         query = listen()
-        if "motion" in query.lower() or "hello" in query.lower():
-            created()
-            break
+        created()
+        break
     main()
     
 
