@@ -7,18 +7,18 @@ import os
 import subprocess
 import webbrowser
 
-def created():
+def created(query):
     response_dict = {
         "hello motion": "Hi there! How can I help you?",
-        "how are you": "I am perfect ",
-        "hey": "hey their",
-        "Activate motion": "Any tasks sir"}
+        "how are you": "I am perfect",
+        "activate motion": "Any tasks, sir?"
+    }
     for keyword, response in response_dict.items():
-        if keyword.lower() in query:
+        if keyword.lower() in query.lower():
             speak(response)
 
-
     return "I'm not sure how to respond to that."
+
     
 
 def take_cmd():
@@ -71,30 +71,14 @@ def open_():
     except:
         speak("their is an unknown error")
 
-def insta():
-    try:
-        speak("Opening Insta")
-        webbrowser.open("https://www.instagram.com/?utm_source=pwa_homescreen&__pwa=1")
-    except:
-        speak("their is an unknown error")
-def git():
-    try:
-        speak("Opening Github")
-        webbrowser.open("https://github.com/")
-    except:
-        speak("their is an unknown error")
+
 def chatgpt():
     try:
         speak("Opening Chatgpt")
         webbrowser.open("https://chat.openai.com/")
     except:
         speak("their is an unknown error")
-def youtube():
-    try:
-        speak("Sure sir")
-        webbrowser.open("https://www.youtube.com/")
-    except:
-        speak("their is an unknown error")
+
 def class_room():
     try:
         speak("Sure sir")
@@ -154,31 +138,39 @@ def trans(query):
         word = new_q[pos + 1]
         tranlate(word)
     except ValueError:
-        print("Sorry whats thats word")\
-    
-    
+        print("Sorry whats thats word")
+
+def open_website(query):
+    new_query = query.split()
+    a = new_query.index("open")
+    z = new_query[a + 1]
+    web_link = f"https://{z}.com/"
+    speak(f"opening {z} ")
+    webbrowser.open(web_link)    
+
 def main():    
         while True:
             query = listen() 
-            if "insta" in query or "gram" in query:
-                insta()
+            if "open" in query and "motion" in query:
+                open_website(query)
                 
-            if "youtube" in query or "tube" in query:
-                youtube()
+            elif "motion" in query and "you" in query:
+                created(query)
+            
+            elif "hi" in query or "activate" in query or "hello" in query:
+                created(query)
                 
-            elif "chrome" in query or "crome" in query:
+            elif "chrome" in query and "open" in query:
                 open_()
                 
             elif "time" in query:
                 time_()
                 
-            elif "power" in query:
+            elif "shutdown" in query and "system" in query:
                 shutdown()
                 break
-            elif "github" in query:
-                git()
                 
-            elif "chat" in query or "gpt" in query or "chatgpt" in query:
+            elif "chat" in query and "gpt" in query:
                 chatgpt()
                 
             elif "music" in query or "song" in query or "gaana" in query:
@@ -186,6 +178,7 @@ def main():
             
             elif "notes" in query or "making" in query :
                 note()
+            
             elif "translate" in query :
                 trans(query)
             
@@ -194,10 +187,6 @@ def main():
         
         
 if __name__ == "__main__":
-    while True:   
-        query = listen()
-        created()
-        break
     main()
     
 
