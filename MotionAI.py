@@ -6,6 +6,8 @@ import requests
 import os
 import subprocess
 import webbrowser
+import google.generativeai as genai
+import os
 
 def created(query):
     response_dict = {
@@ -146,7 +148,19 @@ def open_website(query):
     z = new_query[a + 1]
     web_link = f"https://{z}.com/"
     speak(f"opening {z} ")
-    webbrowser.open(web_link)    
+    webbrowser.open(web_link)
+
+def bard(query):
+    # text = query.remove("hey" , "")
+    text = query.replace("motion" , "")
+    genai.configure(api_key=os.environ["bard_api"])
+    model = genai.GenerativeModel('gemini-pro')
+    try:
+        response = model.generate_content(f"{text} in shortest way possible")
+        print(response.text)
+        speak (response.text)
+    except KeyError as e :
+        print('something is wrong')
 
 def main():    
         while True:
@@ -154,10 +168,10 @@ def main():
             if "open" in query and "motion" in query:
                 open_website(query)
                 
-            elif "motion" in query and "you" in query:
-                created(query)
+            elif "motion" in query :
+                bard(query)          
             
-            elif "hi" in query or "activate" in query or "hello" in query:
+            elif "activate" in query :
                 created(query)
                 
             elif "chrome" in query and "open" in query:
