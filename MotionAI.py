@@ -35,7 +35,7 @@ def take_cmd():
     try:
         print('Recognizing...')
         query = recognizer.recognize_google(audio, language='en-in')
-        print(f"You said: {query}")
+        print(f"VEE: {query}")
         return query.lower()
     except sr.UnknownValueError:
         print('Sorry , Could you repeat that')
@@ -54,7 +54,7 @@ def listen():
 # speak
 engine = pyttsx3.init('sapi5')   
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)
+engine.setProperty('voice', voices[0 ].id)
 
 
 def speak(audio):
@@ -108,7 +108,7 @@ def music():
     file_path = os.path.join("E:\\MUSIC" , rf )
     # print(file_path)
     try:
-        subprocess.run(["start","wmplayer", file_path],shell=True)
+        subprocess.run(["start","vlc", file_path],shell=True)
     except:
         print('nonononoon')
         # print(file_path)
@@ -158,8 +158,10 @@ def bard(query):
     try:
         response = model.generate_content(f"{text} in shortest way possible")
         print(response.text)
-        speak (response.text)
+        speak(response.text)
     except KeyError as e :
+        print('something is wrong')
+    except ValueError as e :
         print('something is wrong')
 
 def main():    
@@ -168,9 +170,6 @@ def main():
             if "open" in query and "motion" in query:
                 open_website(query)
                 
-            elif "motion" in query :
-                bard(query)          
-            
             elif "activate" in query :
                 created(query)
                 
@@ -195,6 +194,9 @@ def main():
             
             elif "translate" in query :
                 trans(query)
+            
+            elif query :
+                bard(query)                               
             
             else:
                 print("Could you please say it again?")
