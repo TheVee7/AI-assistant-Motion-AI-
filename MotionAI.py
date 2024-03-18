@@ -8,6 +8,8 @@ import subprocess
 import webbrowser
 import google.generativeai as genai
 import os
+import urllib.parse
+
 
 def created(query):
     response_dict = {
@@ -54,12 +56,13 @@ def listen():
 # speak
 engine = pyttsx3.init('sapi5')   
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0 ].id)
+engine.setProperty('voice', voices[1].id)
 
 
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
+speak("motion is starting")
 
 def time_():
     time_curr = time.ctime(time.time())
@@ -88,11 +91,12 @@ def class_room():
     except:
         speak("their is an unknown error")
 
+
 def shutdown():
     shut_ = "shutdown /s"
     try:
         subprocess.run(shut_ , shell=True)
-        speak("the system will shutdown shortly")
+        speak("the system will shutdown shortly") 
     except:
         speak("their is an error")
 
@@ -103,12 +107,13 @@ def note():
 
 def music():
     files = os.listdir("E:\\MUSIC")   
-    # file = os.path.join("E:\\MUSIC", files)
-    rf = random.choice(files)
+    mp3_files = [file for file in files if file.endswith(".mp3")]
+    rf = random.choice(mp3_files)
     file_path = os.path.join("E:\\MUSIC" , rf )
     # print(file_path)
     try:
-        subprocess.run(["start","vlc", file_path],shell=True)
+        speak(f"playing music from computer")
+        subprocess.run(["start","vlc", file_path],shell=True) 
     except:
         print('nonononoon')
         # print(file_path)
@@ -156,7 +161,7 @@ def bard(query):
     genai.configure(api_key=os.environ["bard_api"])
     model = genai.GenerativeModel('gemini-pro')
     try:
-        response = model.generate_content(f"{text} in shortest way possible")
+        response = model.generate_content(f"{text} in shortest way possible")       
         print(response.text)
         speak(response.text)
     except KeyError as e :
@@ -164,9 +169,25 @@ def bard(query):
     except ValueError as e :
         print('something is wrong')
 
+def search_on_google(query):
+    # Construct the Google search URL
+    new_q = query.split()
+    index = new_q.index("google")
+    new_q = new_q[index + 1 : ]
+    new_q = ' '.join(new_q)
+
+    query = urllib.parse.quote_plus(new_q)
+    url = f"https://www.google.com/search?q={query}"
+
+    # Open the URL in a new tab
+    webbrowser.open_new_tab(url)
+
+
+
 def main():    
         while True:
-            query = listen() 
+            query = listen()
+
             if "open" in query and "motion" in query:
                 open_website(query)
                 
@@ -195,6 +216,13 @@ def main():
             elif "translate" in query :
                 trans(query)
             
+            elif "Google" in query or "search" in query: 
+                search_on_google(query)
+            
+            elif "Exit" in query : 
+                break
+                
+            
             elif query :
                 bard(query)                               
             
@@ -204,6 +232,11 @@ def main():
         
 if __name__ == "__main__":
     main()
+
+
+
+
+
     
 
 
