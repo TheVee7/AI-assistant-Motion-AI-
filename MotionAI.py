@@ -9,6 +9,7 @@ import webbrowser
 import google.generativeai as genai
 import os
 import urllib.parse
+from main import compost
 
 
 def created(query):
@@ -62,7 +63,6 @@ engine.setProperty('voice', voices[1].id)
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
-speak("motion is starting")
 
 def time_():
     time_curr = time.ctime(time.time())
@@ -105,17 +105,41 @@ def note():
             a = listen()
             print( a , file=file)
 
-def music():
-    files = os.listdir("E:\\MUSIC")   
-    mp3_files = [file for file in files if file.endswith(".mp3")]
-    rf = random.choice(mp3_files)
-    file_path = os.path.join("E:\\MUSIC" , rf )
-    # print(file_path)
-    try:
-        speak(f"playing music from computer")
-        subprocess.run(["start","vlc", file_path],shell=True) 
-    except:
-        print('nonononoon')
+def music(action=None):
+    global current_file
+    
+    # Directory containing music files
+    music_directory = "E:\\MUSIC"
+    
+    # List all MP3 files in the directory
+    mp3_files = [file for file in os.listdir(music_directory) if file.endswith(".mp3")]
+    
+    # If action is provided, handle it
+    if action:
+        if action == "pause":
+            subprocess.run(["vlc", "--play-and-pause"])
+        elif action == "stop":
+            subprocess.run(["vlc", "--stop"])
+            current_file = None
+        elif action == "next":
+            # Stop the current playback if any
+            if current_file:
+                subprocess.run(["vlc", "--stop"])
+            
+            # Choose a new random file and play it
+            current_file = random.choice(mp3_files)
+            file_path = os.path.join(music_directory, current_file)
+            speak(f"Playing next song: {current_file}")
+            subprocess.run(["start", "vlc", file_path], shell=True)
+    else:
+        # If no action specified, play a random song
+        if mp3_files:
+            current_file = random.choice(mp3_files)
+            file_path = os.path.join(music_directory, current_file)
+            speak(f"Playing music from computer: {current_file}")
+            subprocess.run(["start", "vlc", file_path], shell=True)
+        else:
+            speak("No music files found in the directory")
         # print(file_path)
 
 def tranlate(x):
@@ -199,6 +223,9 @@ def main():
                 
             elif "time" in query:
                 time_()
+            # elif "compost" or "status" in query:
+            #     speak("working on it ")
+            #     compost()
                 
             elif "shutdown" in query and "system" in query:
                 shutdown()
@@ -207,8 +234,14 @@ def main():
             elif "chat" in query and "gpt" in query:
                 chatgpt()
                 
-            elif "music" in query or "song" in query or "gaana" in query:
+            elif "music" in query or "gaana" in query:
                 music()
+            
+            elif "Stop" in query or "wait" in query or "pause" in query:
+                music("pause")
+            
+            elif "Next" in query or "diffrent" in query :
+                music("next")
             
             elif "notes" in query or "making" in query :
                 note()
