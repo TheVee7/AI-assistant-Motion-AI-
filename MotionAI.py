@@ -234,7 +234,7 @@ def main():
             elif "chat" in query and "gpt" in query:
                 chatgpt()
                 
-            elif "music" in query or "gaana" in query:
+            elif "music" in query or "song" in query or "gaana" in query:
                 music()
             
             elif "Stop" in query or "wait" in query or "pause" in query:
