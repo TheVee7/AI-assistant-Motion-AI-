@@ -10,6 +10,7 @@ import google.generativeai as genai
 import os
 import urllib.parse
 from main import compost
+from Music_player import play_random_songs,control
 
 
 def created(query):
@@ -105,43 +106,6 @@ def note():
             a = listen()
             print( a , file=file)
 
-def music(action=None):
-    global current_file
-    
-    # Directory containing music files
-    music_directory = "E:\\MUSIC"
-    
-    # List all MP3 files in the directory
-    mp3_files = [file for file in os.listdir(music_directory) if file.endswith(".mp3")]
-    
-    # If action is provided, handle it
-    if action:
-        if action == "pause":
-            subprocess.run(["vlc", "--play-and-pause"])
-        elif action == "stop":
-            subprocess.run(["vlc", "--stop"])
-            current_file = None
-        elif action == "next":
-            # Stop the current playback if any
-            if current_file:
-                subprocess.run(["vlc", "--stop"])
-            
-            # Choose a new random file and play it
-            current_file = random.choice(mp3_files)
-            file_path = os.path.join(music_directory, current_file)
-            speak(f"Playing next song: {current_file}")
-            subprocess.run(["start", "vlc", file_path], shell=True)
-    else:
-        # If no action specified, play a random song
-        if mp3_files:
-            current_file = random.choice(mp3_files)
-            file_path = os.path.join(music_directory, current_file)
-            speak(f"Playing music from computer: {current_file}")
-            subprocess.run(["start", "vlc", file_path], shell=True)
-        else:
-            speak("No music files found in the directory")
-        # print(file_path)
-
 def tranlate(x):
 
     try:
@@ -235,13 +199,16 @@ def main():
                 chatgpt()
                 
             elif "music" in query or "song" in query or "gaana" in query:
-                music()
+                directory = "E:\\MUSIC"
+                num_songs = 5
+                play_random_songs(directory,num_songs)
+                
             
             elif "Stop" in query or "wait" in query or "pause" in query:
-                music("pause")
+                control("stop")
             
             elif "Next" in query or "diffrent" in query :
-                music("next")
+                control("next")
             
             elif "notes" in query or "making" in query :
                 note()
