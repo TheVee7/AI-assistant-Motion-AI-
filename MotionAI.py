@@ -9,8 +9,7 @@ import webbrowser
 import google.generativeai as genai
 import os
 import urllib.parse
-from main import compost
-from Music_player import play_random_songs,control
+from Music_player import *
 
 
 def created(query):
@@ -198,17 +197,19 @@ def main():
             elif "chat" in query and "gpt" in query:
                 chatgpt()
                 
-            elif "music" in query or "song" in query or "gaana" in query:
+            elif "music" in query or "gaana" in query:
                 directory = "E:\\MUSIC"
                 num_songs = 5
-                play_random_songs(directory,num_songs)
-                
+                speak("playing local playlist")
+                music()
             
-            elif "Stop" in query or "wait" in query or "pause" in query:
-                control("stop")
-            
-            elif "Next" in query or "diffrent" in query :
-                control("next")
+            elif "next" in query and "song" in query :
+                action = "next"
+                control(action)
+
+            elif "stop" in query and "song" in query :
+                action = "stop"
+                control(action)
             
             elif "notes" in query or "making" in query :
                 note()
