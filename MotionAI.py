@@ -10,6 +10,8 @@ import google.generativeai as genai
 import os
 import urllib.parse
 from Music_player import *
+import tkinter as tk
+from PIL import Image, ImageTk
 
 
 def created(query):
@@ -100,6 +102,15 @@ def shutdown():
     except:
         speak("their is an error")
 
+def end():
+    # shut_ = "exit"
+    # try:
+    #     subprocess.run(shut_ , shell=True)
+    #     root.destroy()
+    # except:
+    #     speak("their is an error")
+    root.destroy()
+
 def note():
     with open('notes.txt', 'w') as file:
             a = listen()
@@ -148,9 +159,11 @@ def bard(query):
     genai.configure(api_key=os.environ["bard_api"])
     model = genai.GenerativeModel('gemini-pro')
     try:
-        response = model.generate_content(f"{text} in shortest way possible")       
-        print(response.text)
-        speak(response.text)
+        response = model.generate_content(f"{text} .in shortest way possible")
+        new_text = response.text
+        new_text = new_text.replace("*","")
+        print(new_text)
+        speak(new_text)
     except KeyError as e :
         print('something is wrong')
     except ValueError as e :
@@ -229,21 +242,37 @@ def main():
             
             else:
                 print("Could you please say it again?")
-        
-        
+
+
 if __name__ == "__main__":
-    main()
+    root = tk.Tk()
+    root.title("Motion")
 
 
+    image_path = "E:\\GIT PUSH\\AI-assistant-Motion-AI-\\HOMEPAGE.jpg"
+    image = Image.open(image_path)
+    photo = ImageTk.PhotoImage(image)
 
 
-
-    
-
-
-            
+    icon_path = "Motion-icon-.ico"
+    root.iconbitmap(icon_path)
 
 
+    label = tk.Label(root, image=photo)
+    label.image = photo  # Keep a reference to prevent garbage collection
+    label.pack()
 
+# Create and pack the start motion button
+    custom_font = ('Helvetica', 10, 'bold')
+    button = tk.Button(root, text='Start Motion', command=main , font=custom_font, width=410, bg= "#101018", fg="white")
+    button.pack(padx=5)
+    button = tk.Button(root, text='Exit Motion', command=end , font=custom_font, width=410, bg= "#101018", fg="white")
+    button.pack(padx=5, pady=3 )
 
+# Set window size constraints
+    root.geometry("410x460")
+    root.maxsize(410, 469)
+    root.minsize(410, 469)
 
+# Run the Tkinter event loop
+    root.mainloop()
